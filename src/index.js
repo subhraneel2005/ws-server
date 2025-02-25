@@ -36,7 +36,7 @@ ws.on('connection', (socket) => {
                 session.answers.push(data.answer);
                 
                 // Check if we've reached the maximum questions
-                if (session.questionCount < 3) {
+                if (session.questionCount < 10) {
                     await sendNextQuestion(socket, sessionId);
                     session.questionCount++;
                 } else {
@@ -54,7 +54,7 @@ ws.on('connection', (socket) => {
                     setTimeout(() => {
                         socket.close();
                         activeSessions.delete(sessionId);
-                    }, 120000);
+                    }, 60000);
                 }
             }
         } catch (error) {
