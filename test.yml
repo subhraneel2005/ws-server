@@ -1,0 +1,13 @@
+config:
+  target: "ws://localhost:8080"
+  phases:
+    - duration: 60
+      arrivalRate: 50
+scenarios:
+  - engine: "ws"
+    flow:
+      - send:
+          text: '{"type": "start", "jobDescription": "Nextjs Developer"}'
+      - think: 1
+      - send:
+          text: '{"type": "response", "answer": "some answer about the asked question"}'
