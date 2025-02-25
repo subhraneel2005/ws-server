@@ -8,6 +8,17 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+let a = 0;
+function increaseMe(){
+    setInterval(() => {
+        a++;
+        if(a>1000) a = 0;
+    },10000)
+}
+console.log(a);
+
+increaseMe()
+
 const ws = new WebSocketServer({ noServer: true });
 export const activeSessions = new Map();
 
