@@ -1,7 +1,7 @@
-import OpenAI from 'openai'
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { activeSessions } from '../index.js';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export async function sendNextQuestion(ws, sessionId) {
     const session = activeSessions.get(sessionId);
@@ -16,12 +16,11 @@ export async function sendNextQuestion(ws, sessionId) {
         Ask the next interview question.
     `;
 
-    const response = await openai.chat.completions.create({
-        model: "gpt-4",
-        messages: [{ role: "system", content: prompt }]
-    });
-
-    const question = response.choices[0].message.content;
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    
+    const question = response.text();
     session.questions.push(question);
     ws.send(JSON.stringify({ type: "question", question }));
 }
@@ -38,12 +37,10 @@ export async function sendFeedback(ws, sessionId) {
         ${conversation}
     `;
 
-    const response = await openai.chat.completions.create({
-        model: "gpt-4",
-        messages: [{ role: "system", content: prompt }]
-    });
-
-    const feedback = response.choices[0].message.content;
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    
+    const feedback = response.text();
     ws.send(JSON.stringify({ type: "feedback", feedback }));
 }
-
